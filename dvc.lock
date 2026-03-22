@@ -1,0 +1,131 @@
+schema: '2.0'
+stages:
+  split:
+    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python  src/data/split_data.py
+    deps:
+    - path: data/raw_data
+      hash: md5
+      md5: 83524b9ab09f4ac15af2c899d45e60eb.dir
+      size: 333773
+      nfiles: 2
+    - path: src/data/split_data.py
+      hash: md5
+      md5: 10ced52181e1b73dab47c5c043439771
+      size: 1241
+    outs:
+    - path: data/processed_data/X_test.csv
+      hash: md5
+      md5: b6c2910e3b3fc562c5b516b63fc3e22c
+      size: 59909
+    - path: data/processed_data/X_train.csv
+      hash: md5
+      md5: ef01f67c035349e375300528a99938f5
+      size: 238533
+    - path: data/processed_data/y_test.csv
+      hash: md5
+      md5: a051d29629c8bbb4cfb7e85c7f0315da
+      size: 6456
+    - path: data/processed_data/y_train.csv
+      hash: md5
+      md5: a9cd9d91da89f732843d72548f64ded3
+      size: 25951
+  normalize:
+    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python  src/data/scale_data.py
+    deps:
+    - path: data/processed_data/X_test.csv
+      hash: md5
+      md5: b6c2910e3b3fc562c5b516b63fc3e22c
+      size: 59909
+    - path: data/processed_data/X_train.csv
+      hash: md5
+      md5: ef01f67c035349e375300528a99938f5
+      size: 238533
+    - path: data/processed_data/y_test.csv
+      hash: md5
+      md5: a051d29629c8bbb4cfb7e85c7f0315da
+      size: 6456
+    - path: data/processed_data/y_train.csv
+      hash: md5
+      md5: a9cd9d91da89f732843d72548f64ded3
+      size: 25951
+    - path: src/data/scale_data.py
+      hash: md5
+      md5: 2b2b1267745001b02249a7b6f86e56ee
+      size: 1459
+    outs:
+    - path: data/processed_data/X_test_scaled.csv
+      hash: md5
+      md5: 5e079189af6bd091d651a89fafb1c290
+      size: 57026
+    - path: data/processed_data/X_train_scaled.csv
+      hash: md5
+      md5: c1b80eb7f083888b625dd0369cf381f8
+      size: 227497
+  gridsearch:
+    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python src/models/grid_search.py
+    deps:
+    - path: data/processed_data/X_train_scaled.csv
+      hash: md5
+      md5: c1b80eb7f083888b625dd0369cf381f8
+      size: 227497
+    - path: data/processed_data/y_train.csv
+      hash: md5
+      md5: a9cd9d91da89f732843d72548f64ded3
+      size: 25951
+    - path: src/models/grid_search.py
+      hash: md5
+      md5: c13d92b3e9672eb1d4ca485f6d9d5432
+      size: 1550
+    outs:
+    - path: models/best_params.pkl
+      hash: md5
+      md5: 4ca9fe2255f58659965d8339cfb1ea9d
+      size: 69
+  training:
+    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python src/models/train_model.py
+    deps:
+    - path: data/processed_data/X_train_scaled.csv
+      hash: md5
+      md5: c1b80eb7f083888b625dd0369cf381f8
+      size: 227497
+    - path: data/processed_data/y_train.csv
+      hash: md5
+      md5: a9cd9d91da89f732843d72548f64ded3
+      size: 25951
+    - path: models/best_params.pkl
+      hash: md5
+      md5: 4ca9fe2255f58659965d8339cfb1ea9d
+      size: 69
+    - path: src/models/train_model.py
+      hash: md5
+      md5: b400d945aa925eb2afa08c1b2eda3106
+      size: 1276
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: fcae3ef5d3ec2c3f067b890da122882d
+      size: 3925649
+  evaluate:
+    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python src/models/evaluate_model.py
+    deps:
+    - path: data/processed_data/X_test_scaled.csv
+      hash: md5
+      md5: 5e079189af6bd091d651a89fafb1c290
+      size: 57026
+    - path: data/processed_data/y_test.csv
+      hash: md5
+      md5: a051d29629c8bbb4cfb7e85c7f0315da
+      size: 6456
+    - path: models/model.pkl
+      hash: md5
+      md5: fcae3ef5d3ec2c3f067b890da122882d
+      size: 3925649
+    - path: src/models/evaluate_model.py
+      hash: md5
+      md5: 31215e98aa55d25887d0170beac19599
+      size: 1783
+    outs:
+    - path: metrics/scores.json
+      hash: md5
+      md5: a656d832df9a843456ef9cdcdfdfc81d
+      size: 96
