@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   split:
-    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python  src/data/split_data.py
+    cmd: uv run src/data/split_data.py
     deps:
     - path: data/raw_data
       hash: md5
@@ -30,7 +30,7 @@ stages:
       md5: a9cd9d91da89f732843d72548f64ded3
       size: 25951
   normalize:
-    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python  src/data/scale_data.py
+    cmd: uv run src/data/scale_data.py
     deps:
     - path: data/processed_data/X_test.csv
       hash: md5
@@ -62,7 +62,7 @@ stages:
       md5: c1b80eb7f083888b625dd0369cf381f8
       size: 227497
   gridsearch:
-    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python src/models/grid_search.py
+    cmd: uv run src/models/grid_search.py
     deps:
     - path: data/processed_data/X_train_scaled.csv
       hash: md5
@@ -82,7 +82,7 @@ stages:
       md5: 4ca9fe2255f58659965d8339cfb1ea9d
       size: 69
   training:
-    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python src/models/train_model.py
+    cmd: uv run src/models/train_model.py
     deps:
     - path: data/processed_data/X_train_scaled.csv
       hash: md5
@@ -106,7 +106,7 @@ stages:
       md5: fcae3ef5d3ec2c3f067b890da122882d
       size: 3925649
   evaluate:
-    cmd: /home/ubuntu/exam_DVC/.monenv/bin/python src/models/evaluate_model.py
+    cmd: uv run src/models/evaluate_model.py
     deps:
     - path: data/processed_data/X_test_scaled.csv
       hash: md5
